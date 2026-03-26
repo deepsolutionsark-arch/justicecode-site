@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>JUSTICE.CODE</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--black:#0a0a0a;--white:#f5f0eb;--off:#1a1a1a;--gold:#c9a84c;--muted:#6b6b6b;--line:#2a2a2a;--serif:'Georgia',serif;--sans:'Helvetica Neue',Helvetica,Arial,sans-serif}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--sans);overflow-x:hidden}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:24px 48px;border-bottom:0.5px solid var(--line);background:rgba(10,10,10,0.92);backdrop-filter:blur(8px)}
+.nav-logo{font-size:13px;letter-spacing:0.25em;text-transform:uppercase;font-weight:500}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover{color:var(--gold)}
+
+.hero{height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:80px 48px 64px;position:relative;border-bottom:0.5px solid var(--line);overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0a0a0a 40%,#1c1510 100%);z-index:0}
+.hero-img-placeholder{position:absolute;right:0;top:0;bottom:0;width:55%;background:#111;display:flex;align-items:center;justify-content:center;border-left:0.5px solid var(--line)}
+.hero-img-placeholder span{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+.hero-content{position:relative;z-index:1;max-width:520px}
+.hero-eyebrow{font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold);margin-bottom:24px}
+.hero-title{font-family:var(--serif);font-size:clamp(52px,8vw,96px);font-weight:400;line-height:0.92;margin-bottom:32px;font-style:italic}
+.hero-title span{font-style:normal;font-family:var(--sans);font-size:clamp(12px,1.2vw,15px);letter-spacing:0.3em;text-transform:uppercase;display:block;color:var(--muted);margin-bottom:8px;font-weight:400}
+.hero-sub{font-size:13px;color:var(--muted);line-height:1.8;max-width:340px;margin-bottom:48px;letter-spacing:0.03em}
+.btn{display:inline-block;padding:14px 36px;border:0.5px solid var(--white);font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--white);text-decoration:none;transition:all 0.2s;cursor:pointer;background:transparent}
+.btn:hover{background:var(--white);color:var(--black)}
+.btn-gold{border-color:var(--gold);color:var(--gold)}
+.btn-gold:hover{background:var(--gold);color:var(--black)}
+.hero-issue{position:absolute;bottom:64px;right:48px;z-index:1;text-align:right}
+.hero-issue p{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+.hero-issue strong{font-size:11px;color:var(--white);display:block;margin-top:4px}
+
+/* TODAY'S LOOK */
+#todays-look{padding:100px 48px;border-bottom:0.5px solid var(--line)}
+.tl-header{margin-bottom:56px;display:flex;justify-content:space-between;align-items:flex-end}
+.label{font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.section-title{font-family:var(--serif);font-size:clamp(28px,4vw,52px);font-weight:400;font-style:italic;margin-bottom:0}
+
+/* COUNTDOWN STATE */
+.tl-countdown{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:480px;border:0.5px solid var(--line);gap:32px;background:#0d0d0d}
+.tl-countdown-label{font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold)}
+.tl-countdown-title{font-family:var(--serif);font-size:clamp(24px,3vw,40px);font-style:italic;color:var(--white);text-align:center;max-width:400px;line-height:1.3}
+.tl-clock{display:flex;gap:32px}
+.tl-clock-unit{display:flex;flex-direction:column;align-items:center;gap:8px}
+.tl-clock-num{font-family:var(--serif);font-size:clamp(36px,5vw,64px);font-style:italic;color:var(--white);line-height:1;min-width:64px;text-align:center}
+.tl-clock-label{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted)}
+.tl-clock-sep{font-family:var(--serif);font-size:48px;color:var(--gold);align-self:flex-start;margin-top:8px;line-height:1}
+.tl-pulse{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.6)}}
+
+/* LIVE LOOK STATE */
+.tl-live{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);min-height:560px}
+.tl-photo{background:#0d0d0d;position:relative;min-height:560px;overflow:hidden}
+.tl-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.tl-photo-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;min-height:560px}
+.tl-photo-placeholder span{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)}
+.tl-live-badge{position:absolute;top:24px;left:24px;display:flex;align-items:center;gap:8px;background:rgba(10,10,10,0.85);padding:8px 16px;border:0.5px solid var(--gold)}
+.tl-live-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.5s ease-in-out infinite}
+.tl-live-badge span{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold)}
+.tl-date-stamp{position:absolute;bottom:24px;left:24px;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);background:rgba(10,10,10,0.7);padding:6px 12px}
+
+.tl-breakdown{background:var(--black);padding:48px 40px;display:flex;flex-direction:column;justify-content:space-between}
+.tl-breakdown-top{}
+.tl-breakdown-intro{font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:40px;letter-spacing:0.03em}
+.tl-pieces{display:flex;flex-direction:column;gap:0}
+.tl-piece{padding:20px 0;border-bottom:0.5px solid var(--line);display:flex;flex-direction:column;gap:6px;cursor:default}
+.tl-piece:first-child{border-top:0.5px solid var(--line)}
+.tl-piece-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.tl-piece-num{font-size:9px;letter-spacing:0.2em;color:var(--muted);margin-top:2px;min-width:20px}
+.tl-piece-info{flex:1}
+.tl-piece-name{font-size:13px;font-weight:500;color:var(--white);margin-bottom:4px;line-height:1.4}
+.tl-piece-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+.tl-piece-links{display:flex;gap:16px;flex-wrap:wrap}
+.tl-piece-link{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;color:var(--gold);border-bottom:0.5px solid transparent;transition:border-color 0.2s}
+.tl-piece-link:hover{border-color:var(--gold)}
+.tl-piece-link.shop{color:var(--muted)}
+.tl-piece-link.shop:hover{color:var(--white);border-color:var(--muted)}
+.tl-ai-badge{display:inline-flex;align-items:center;gap:6px;margin-top:40px;padding:8px 16px;border:0.5px solid var(--line)}
+.tl-ai-badge span{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+.tl-ai-icon{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+
+/* loading state */
+.tl-loading{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:560px;gap:24px;background:#0d0d0d}
+.tl-loading.active{display:flex}
+.tl-spinner{width:32px;height:32px;border:0.5px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tl-loading-text{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted)}
+
+/* TICKER */
+.ticker{background:var(--off);padding:12px 0;overflow:hidden;border-bottom:0.5px solid var(--line);border-top:0.5px solid var(--line)}
+.ticker-inner{display:flex;animation:ticker 20s linear infinite;white-space:nowrap}
+.ticker-inner span{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted);padding:0 40px}
+.ticker-inner span.gold{color:var(--gold)}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+section{padding:100px 48px;border-bottom:0.5px solid var(--line)}
+
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-img{aspect-ratio:3/4;background:#111;border:0.5px solid var(--line);display:flex;align-items:flex-end;justify-content:flex-start;padding:24px;position:relative;overflow:hidden}
+.about-img span{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+.about-img-tag{position:absolute;top:24px;left:24px;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);background:rgba(10,10,10,0.8);padding:6px 12px;border:0.5px solid var(--gold)}
+.about-body p{font-size:14px;color:var(--muted);line-height:2;margin-bottom:20px;letter-spacing:0.02em}
+.about-body p strong{color:var(--white);font-weight:500}
+.stat-row{display:flex;gap:48px;margin-top:48px;padding-top:48px;border-top:0.5px solid var(--line)}
+.stat strong{font-family:var(--serif);font-size:36px;font-style:italic;color:var(--white);display:block}
+.stat span{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+
+.closet-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px}
+.closet-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+.closet-item{background:var(--black);aspect-ratio:3/4;position:relative;overflow:hidden;cursor:pointer}
+.closet-item-img{width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;transition:transform 0.4s ease}
+.closet-item:hover .closet-item-img{transform:scale(1.03)}
+.closet-item-img span{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)}
+.closet-overlay{position:absolute;inset:0;background:rgba(10,10,10,0);display:flex;flex-direction:column;justify-content:flex-end;padding:20px;transition:background 0.3s}
+.closet-item:hover .closet-overlay{background:rgba(10,10,10,0.7)}
+.closet-overlay-text{opacity:0;transform:translateY(8px);transition:all 0.3s}
+.closet-item:hover .closet-overlay-text{opacity:1;transform:translateY(0)}
+.closet-overlay-text p{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--white);margin-bottom:4px}
+.closet-overlay-text span{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold)}
+.closet-featured{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+
+.news-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:48px}
+.news-item{border-top:0.5px solid var(--line);padding-top:28px}
+.news-item-img{aspect-ratio:16/9;background:#111;margin-bottom:20px;display:flex;align-items:center;justify-content:center}
+.news-item-img span{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted)}
+.news-date{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.news-headline{font-family:var(--serif);font-size:18px;font-style:italic;margin-bottom:12px;line-height:1.4}
+.news-excerpt{font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:20px}
+.news-readmore{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--white);text-decoration:none;border-bottom:0.5px solid var(--muted);padding-bottom:2px;transition:color 0.2s,border-color 0.2s}
+.news-readmore:hover{color:var(--gold);border-color:var(--gold)}
+
+.lbdt-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line)}
+.lbdt-piece{background:var(--black);aspect-ratio:2/3;position:relative;overflow:hidden;cursor:not-allowed}
+.lbdt-piece-img{width:100%;height:100%;background:#0f0f0f;display:flex;align-items:center;justify-content:center}
+.lbdt-piece-img span{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+.lbdt-tag{position:absolute;top:16px;left:16px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--black);background:var(--white);padding:4px 10px}
+.lbdt-tag.sold{background:var(--muted)}
+.lbdt-tag.archive{background:var(--gold)}
+.lbdt-note{text-align:center;margin-top:40px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)}
+
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px}
+.social-links{display:flex;flex-direction:column;gap:0}
+.social-link{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:0.5px solid var(--line);text-decoration:none;color:var(--white);transition:all 0.2s}
+.social-link:hover .social-arrow{transform:translateX(6px);color:var(--gold)}
+.social-link:hover .social-name{color:var(--gold)}
+.social-name{font-size:11px;letter-spacing:0.25em;text-transform:uppercase;transition:color 0.2s}
+.social-handle{font-size:11px;color:var(--muted)}
+.social-arrow{font-size:16px;transition:all 0.2s}
+.contact-form{display:flex;flex-direction:column;gap:16px}
+.contact-form input,.contact-form textarea{background:transparent;border:0.5px solid var(--line);color:var(--white);padding:14px 16px;font-family:var(--sans);font-size:12px;letter-spacing:0.05em;outline:none;transition:border-color 0.2s;resize:none}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--muted);letter-spacing:0.1em;font-size:11px;text-transform:uppercase}
+.contact-form input:focus,.contact-form textarea:focus{border-color:var(--gold)}
+.contact-form textarea{min-height:120px}
+footer{padding:48px;display:flex;justify-content:space-between;align-items:center}
+.footer-logo{font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted)}
+.footer-copy{font-size:10px;letter-spacing:0.1em;color:var(--muted)}
+
+/* DEMO CONTROLS */
+.demo-bar{position:fixed;bottom:24px;right:24px;z-index:200;display:flex;gap:8px;flex-direction:column;align-items:flex-end}
+.demo-btn{padding:10px 18px;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;border:0.5px solid var(--gold);color:var(--gold);background:rgba(10,10,10,0.9);transition:all 0.2s}
+.demo-btn:hover{background:var(--gold);color:var(--black)}
+.demo-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);text-align:right}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Justice.Code</div>
+  <ul class="nav-links">
+    <li><a href="#todays-look">Today's Look</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#closet">My Closet</a></li>
+    <li><a href="#news">News</a></li>
+    <li><a href="#lbdt">Look But Don't Touch</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-img-placeholder"><span>[ Your Model Photo Here ]</span></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Est. — The Collection</p>
+    <h1 class="hero-title"><span>Justice.Code</span>The Art of Wearing Power</h1>
+    <p class="hero-sub">Where luxury meets the streets. Every piece is a statement. Every look is a language only few can speak.</p>
+    <a href="#todays-look" class="btn">See Today's Look</a>
+  </div>
+  <div class="hero-issue"><p>Current Season</p><strong>Vol. I — Shadow Edition</strong></div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>Justice.Code</span><span class="gold">—</span><span>Luxury Streetwear</span><span class="gold">—</span><span>Shadow Edition</span><span class="gold">—</span><span>Limited Pieces</span><span class="gold">—</span><span>Look. But Don't Touch.</span><span class="gold">—</span>
+    <span>Justice.Code</span><span class="gold">—</span><span>Luxury Streetwear</span><span class="gold">—</span><span>Shadow Edition</span><span class="gold">—</span><span>Limited Pieces</span><span class="gold">—</span><span>Look. But Don't Touch.</span><span class="gold">—</span>
+  </div>
+</div>
+
+<!-- TODAY'S LOOK -->
+<div id="todays-look">
+  <div class="tl-header">
+    <div>
+      <p class="label">Live — Updated Daily</p>
+      <h2 class="section-title">Today's Look</h2>
+    </div>
+    <span id="tl-status-text" style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)"></span>
+  </div>
+
+  <!-- COUNTDOWN (default state) -->
+  <div id="tl-countdown-state" class="tl-countdown">
+    <div class="tl-pulse"></div>
+    <p class="tl-countdown-label">No look yet today</p>
+    <h3 class="tl-countdown-title">Justice.Code drops the look when the look is ready.</h3>
+    <div class="tl-clock">
+      <div class="tl-clock-unit"><span class="tl-clock-num" id="cd-h">00</span><span class="tl-clock-label">Hours</span></div>
+      <span class="tl-clock-sep">:</span>
+      <div class="tl-clock-unit"><span class="tl-clock-num" id="cd-m">00</span><span class="tl-clock-label">Minutes</span></div>
+      <span class="tl-clock-sep">:</span>
+      <div class="tl-clock-unit"><span class="tl-clock-num" id="cd-s">00</span><span class="tl-clock-label">Seconds</span></div>
+    </div>
+    <p style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted)">Check back soon.</p>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div id="tl-loading-state" class="tl-loading">
+    <div class="tl-spinner"></div>
+    <p class="tl-loading-text">Analyzing today's look...</p>
+  </div>
+
+  <!-- LIVE LOOK -->
+  <div id="tl-live-state" class="tl-live" style="display:none">
+    <div class="tl-photo">
+      <img id="tl-img" src="" alt="Today's look"/>
+      <div class="tl-live-badge"><div class="tl-live-dot"></div><span>Live Today</span></div>
+      <div class="tl-date-stamp" id="tl-date-stamp"></div>
+    </div>
+    <div class="tl-breakdown">
+      <div class="tl-breakdown-top">
+        <p class="tl-breakdown-intro" id="tl-intro-text">Outfit broken down piece by piece — click any item to find it in the closet or shop it.</p>
+        <div class="tl-pieces" id="tl-pieces-list"></div>
+      </div>
+      <div class="tl-ai-badge"><div class="tl-ai-icon"></div><span>Identified by AI — Justice.Code</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-img">
+      <div class="about-img-tag">The Artist</div>
+      <span>[ Your Photo Here ]</span>
+    </div>
+    <div class="about-body">
+      <p class="label">About The Artist</p>
+      <h2 class="section-title">Justice.Code</h2>
+      <p>Born from the intersection of <strong>high fashion and raw street culture</strong>, Justice.Code is not a brand — it's a frequency. A coded language worn on the body, spoken without words.</p>
+      <p>Every stitch, every silhouette, every drop is <strong>intentional</strong>. Designed for those who move through the world with authority and don't ask for permission to be seen.</p>
+      <p>This is luxury without apology. <strong>Streetwear with a spine.</strong></p>
+      <div class="stat-row">
+        <div class="stat"><strong>01</strong><span>Collections</span></div>
+        <div class="stat"><strong>∞</strong><span>Statement</span></div>
+        <div class="stat"><strong>100%</strong><span>Independent</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSET -->
+<section id="closet">
+  <div class="closet-header">
+    <div><p class="label">The Wardrobe</p><h2 class="section-title">My Closet</h2></div>
+    <a href="#" class="btn">View All Pieces</a>
+  </div>
+  <div class="closet-grid">
+    <div class="closet-item closet-featured"><div class="closet-item-img" style="aspect-ratio:auto;height:100%"><span>[ Featured Look ]</span></div><div class="closet-overlay"><div class="closet-overlay-text"><p>Shadow Overcoat</p><span>Vol. I — Statement Piece</span></div></div></div>
+    <div class="closet-item"><div class="closet-item-img"><span>[ Look 02 ]</span></div><div class="closet-overlay"><div class="closet-overlay-text"><p>Fitted Set</p><span>Vol. I</span></div></div></div>
+    <div class="closet-item"><div class="closet-item-img"><span>[ Look 03 ]</span></div><div class="closet-overlay"><div class="closet-overlay-text"><p>Street Layer</p><span>Vol. I</span></div></div></div>
+    <div class="closet-item"><div class="closet-item-img"><span>[ Look 04 ]</span></div><div class="closet-overlay"><div class="closet-overlay-text"><p>Archive Piece</p><span>Vol. I</span></div></div></div>
+    <div class="closet-item"><div class="closet-item-img"><span>[ Look 05 ]</span></div><div class="closet-overlay"><div class="closet-overlay-text"><p>Limited Drop</p><span>Vol. I</span></div></div></div>
+  </div>
+</section>
+
+<!-- NEWS -->
+<section id="news">
+  <div class="closet-header">
+    <div><p class="label">Press & Updates</p><h2 class="section-title">Recent News</h2></div>
+  </div>
+  <div class="news-grid">
+    <div class="news-item"><div class="news-item-img"><span>[ Press Photo ]</span></div><p class="news-date">March 2026</p><h3 class="news-headline">Shadow Edition officially drops this spring</h3><p class="news-excerpt">The debut collection redefines what it means to dress with intention. Vol. I is here — and it doesn't ask twice.</p><a href="#" class="news-readmore">Read More</a></div>
+    <div class="news-item"><div class="news-item-img"><span>[ Press Photo ]</span></div><p class="news-date">February 2026</p><h3 class="news-headline">Justice.Code spotted on set in New York</h3><p class="news-excerpt">The artist steps out in custom pieces ahead of the official launch — the streets already know the name.</p><a href="#" class="news-readmore">Read More</a></div>
+    <div class="news-item"><div class="news-item-img"><span>[ Press Photo ]</span></div><p class="news-date">January 2026</p><h3 class="news-headline">Behind the code — an editorial preview</h3><p class="news-excerpt">An inside look at the creative process, the references, and the obsession that built this collection from scratch.</p><a href="#" class="news-readmore">Read More</a></div>
+  </div>
+</section>
+
+<!-- LOOK BUT DON'T TOUCH -->
+<section id="lbdt">
+  <div class="closet-header">
+    <div><p class="label">Archive — Not For Sale</p><h2 class="section-title">Look But Don't Touch</h2></div>
+  </div>
+  <div class="lbdt-strip">
+    <div class="lbdt-piece" style="grid-column:span 2">
+      <img src="IMG_2192.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"/>
+      <div class="lbdt-tag archive">Archive</div>
+    </div>
+    <div class="lbdt-piece">
+      <div class="lbdt-piece-img" style="background:#0d0d0d;flex-direction:column;gap:8px">
+        <span>[ Archive 02 ]</span>
+      </div>
+      <div class="lbdt-tag sold">Sold</div>
+    </div>
+    <div class="lbdt-piece" style="position:relative">
+      <img src="AFE67BB1-608B-456E-9438-5FB98744BEFA.jpeg" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block"/>
+      <div class="lbdt-tag archive">Archive</div>
+    </div>
+    <div class="lbdt-piece"><div class="lbdt-piece-img"><span>[ Archive 04 ]</span></div><div class="lbdt-tag archive">Archive</div></div>
+  </div>
+  <p class="lbdt-note">These pieces are done. History. You can admire, but you can't have them.</p>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="closet-header">
+    <div><p class="label">Stay Connected</p><h2 class="section-title">Find The Code</h2></div>
+  </div>
+  <div class="contact-grid">
+    <div>
+      <div class="social-links">
+        <a href="#" class="social-link"><span class="social-name">Instagram</span><span class="social-handle">@justice.code</span><span class="social-arrow">→</span></a>
+        <a href="#" class="social-link"><span class="social-name">TikTok</span><span class="social-handle">@justice.code</span><span class="social-arrow">→</span></a>
+        <a href="#" class="social-link"><span class="social-name">Twitter / X</span><span class="social-handle">@justicecode</span><span class="social-arrow">→</span></a>
+        <a href="#" class="social-link"><span class="social-name">Email</span><span class="social-handle">contact@justicecode.com</span><span class="social-arrow">→</span></a>
+      </div>
+    </div>
+    <div>
+      <div class="contact-form">
+        <input type="text" placeholder="Your Name"/>
+        <input type="email" placeholder="Email Address"/>
+        <textarea placeholder="Your Message"></textarea>
+        <a href="#" class="btn btn-gold" style="text-align:center">Send Message</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">Justice.Code — © 2026</span>
+  <span class="footer-copy">All Rights Reserved. Shadow Edition.</span>
+</footer>
+
+<!-- DEMO CONTROLS -->
+<div class="demo-bar">
+  <span class="demo-label">Preview modes</span>
+  <button class="demo-btn" onclick="showCountdown()">Countdown View</button>
+  <button class="demo-btn" onclick="triggerLook()">Simulate Email Hook</button>
+</div>
+
+<script>
+// ── Countdown clock ──────────────────────────────────────────────
+function updateClock(){
+  const now=new Date(),midnight=new Date();
+  midnight.setHours(24,0,0,0);
+  let diff=Math.floor((midnight-now)/1000);
+  const h=Math.floor(diff/3600),m=Math.floor((diff%3600)/60),s=diff%60;
+  document.getElementById('cd-h').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(s).padStart(2,'0');
+}
+updateClock();
+setInterval(updateClock,1000);
+
+// ── State helpers ────────────────────────────────────────────────
+function showCountdown(){
+  document.getElementById('tl-countdown-state').style.display='flex';
+  document.getElementById('tl-loading-state').classList.remove('active');
+  document.getElementById('tl-live-state').style.display='none';
+  document.getElementById('tl-status-text').textContent='Waiting for today\'s drop';
+}
+
+function showLoading(){
+  document.getElementById('tl-countdown-state').style.display='none';
+  document.getElementById('tl-loading-state').classList.add('active');
+  document.getElementById('tl-live-state').style.display='none';
+  document.getElementById('tl-status-text').textContent='Analyzing outfit...';
+}
+
+function showLive(data){
+  document.getElementById('tl-countdown-state').style.display='none';
+  document.getElementById('tl-loading-state').classList.remove('active');
+  const liveEl=document.getElementById('tl-live-state');
+  liveEl.style.display='grid';
+
+  // photo
+  const img=document.getElementById('tl-img');
+  if(data.imageUrl){img.src=data.imageUrl;img.style.display='block';}
+  else{img.style.display='none';}
+
+  // date stamp
+  const d=new Date();
+  document.getElementById('tl-date-stamp').textContent=
+    d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+  // intro
+  if(data.intro) document.getElementById('tl-intro-text').textContent=data.intro;
+
+  // pieces
+  const list=document.getElementById('tl-pieces-list');
+  list.innerHTML='';
+  (data.pieces||[]).forEach((p,i)=>{
+    const el=document.createElement('div');
+    el.className='tl-piece';
+    let linksHtml='';
+    if(p.closetLink) linksHtml+=`<a class="tl-piece-link" href="${p.closetLink}">→ My Closet</a>`;
+    if(p.shopLink)   linksHtml+=`<a class="tl-piece-link shop" href="${p.shopLink}" target="_blank">Shop It</a>`;
+    if(p.where)      linksHtml+=`<span style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">${p.where}</span>`;
+    el.innerHTML=`
+      <div class="tl-piece-row">
+        <span class="tl-piece-num">0${i+1}</span>
+        <div class="tl-piece-info">
+          <p class="tl-piece-name">${p.name}</p>
+          <p class="tl-piece-desc">${p.description}</p>
+          <div class="tl-piece-links">${linksHtml}</div>
+        </div>
+      </div>`;
+    list.appendChild(el);
+  });
+  document.getElementById('tl-status-text').textContent='Updated today';
+}
+
+// ── Demo: simulate the email webhook firing ──────────────────────
+function triggerLook(){
+  showLoading();
+  // In production this would be a real API call to your backend
+  // which receives the emailed image, sends it to GPT-4o,
+  // and returns the structured outfit breakdown.
+  // Here we simulate that with a 2.5s delay + mock response.
+  setTimeout(()=>{
+    showLive({
+      imageUrl: '', // your backend sets this to the uploaded image URL
+      intro: 'Full look broken down. Every piece linked — tap to find it in the closet or track it down.',
+      pieces:[
+        {
+          name:'Shadow Overcoat — Charcoal Double-Breasted',
+          description:'Structured long overcoat in charcoal wool blend. Dropped shoulders, raw-edge lapels, single back vent.',
+          closetLink:'#closet',
+          where:'Custom — Justice.Code Vol. I'
+        },
+        {
+          name:'Onyx Wide-Leg Trousers',
+          description:'High-waisted wide-leg silhouette in matte black tech fabric. Pressed crease, side-seam pockets.',
+          closetLink:'#closet',
+          shopLink:'#',
+          where:'Rick Owens — available online'
+        },
+        {
+          name:'Ribbed Mockneck — Black',
+          description:'Heavyweight cotton ribbed mockneck, relaxed but fitted through the torso.',
+          closetLink:'#closet',
+          shopLink:'#',
+          where:'Lemaire — select stockists'
+        },
+        {
+          name:'Low Chelsea Boot — Black Suede',
+          description:'Minimalist Chelsea boot in black suede, slightly squared toe, stacked leather heel.',
+          closetLink:'#closet',
+          shopLink:'#',
+          where:'Common Projects — online'
+        }
+      ]
+    });
+  },2500);
+}
+
+// ── Init ─────────────────────────────────────────────────────────
+showCountdown();
+</script>
+</body>
+</html>
