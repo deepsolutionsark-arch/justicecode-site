@@ -172,7 +172,7 @@ footer{padding:48px;display:flex;justify-content:space-between;align-items:cente
   <ul class="nav-links">
     <li><a href="#todays-look">Today's Look</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#closet">My Closet</a></li>
+    <li><a href="#closet">The Closet</a></li>
     <li><a href="#news">News</a></li>
     <li><a href="#lbdt">Look But Don't Touch</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -273,7 +273,7 @@ footer{padding:48px;display:flex;justify-content:space-between;align-items:cente
 <!-- CLOSET -->
 <section id="closet">
   <div class="closet-header">
-    <div><p class="label">The Wardrobe</p><h2 class="section-title">My Closet</h2></div>
+    <div><p class="label">The Wardrobe</p><h2 class="section-title">The Closet</h2></div>
     <a href="#" class="btn">View All Pieces</a>
   </div>
   <div class="closet-grid">
@@ -414,7 +414,7 @@ function showLive(data){
     const el=document.createElement('div');
     el.className='tl-piece';
     let linksHtml='';
-    if(p.closetLink) linksHtml+=`<a class="tl-piece-link" href="${p.closetLink}">→ My Closet</a>`;
+    if(p.closetLink) linksHtml+=`<a class="tl-piece-link" href="${p.closetLink}">→ The Closet</a>`;
     if(p.shopLink)   linksHtml+=`<a class="tl-piece-link shop" href="${p.shopLink}" target="_blank">Shop It</a>`;
     if(p.where)      linksHtml+=`<span style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">${p.where}</span>`;
     el.innerHTML=`
